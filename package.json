@@ -1,0 +1,10 @@
+{
+  "name": "minimalnotepad",
+  "version": "1.0.0",
+  "description": "Another minimal/small/tiny notepad that runs in a browser. Has local sync and local offline save.",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.16.4",
+    "socket.io": "^2.2.0"
+  }
+}

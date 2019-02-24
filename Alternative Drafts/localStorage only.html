@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notepad (Nicer)</title>
+    <style>
+        body {
+            background: white;
+            color: #111;
+            font-family: -apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+            font-size:1.2rem;
+            line-height:1.4;
+            max-width:60rem;
+            margin:0 auto;
+            padding:4rem;
+        }
+        body.dark {
+            background: #111;
+            /* color: white; */
+            filter: invert();
+            font-size:1.5rem;
+        }
+        @media only screen and (max-width: 800px) {
+            body {
+                padding: 4rem 1rem;
+            }
+        }
+    </style>
+    <script>
+        // @ts-check
+        "use_strict";
+        const STORAGE_KEY = "txt";
+        const STORED_AT_KEY = "txt_at";
+        window.onload = function () {
+            document.body.setAttribute("contenteditable", "true");
+            const params = new URLSearchParams(location.search);
+            const stored = window.localStorage.getItem(STORAGE_KEY);
+            const storedAt = window.localStorage.getItem(STORED_AT_KEY);
+            if (stored) {
+                document.body.innerHTML = stored;
+                updateTitle(new Date(storedAt));
+            }
+            window.addEventListener('storage', function(event) {
+                console.log("event",event);
+                if (event.key == STORAGE_KEY) {
+                    document.body.innerHTML = event.newValue;
+                    const storedAt = window.localStorage.getItem(STORED_AT_KEY);
+                    updateTitle(new Date(storedAt));
+                }
+            });
+            if (params.get("m") == "d") {
+                let ua = navigator.userAgent.toLowerCase();
+                if (ua.indexOf('safari') > -1 && ua.indexOf('chrome') < 0) {
+                    document.body.classList.add("dark");
+                }
+            }
+            var to;
+            document.body.oninput = function () {
+                clearTimeout(to);
+                clearTitle();
+                const storedAt = new Date();
+                to = setTimeout(function () {
+                    window.localStorage.setItem(STORAGE_KEY, document.body.innerHTML);
+                    window.localStorage.setItem(STORED_AT_KEY, storedAt.toJSON());
+                    updateTitle();
+                }, 1);
+            }
+            setEndOfContenteditable(document.body);
+        };
+        function padDigit(num) {
+            var s = "0" + num;
+            return s.substr(s.length -2);
+        }
+        function clearTitle() {
+            document.title = "NN";
+        }
+        function updateTitle(storedAt) {
+            if (!storedAt) {
+                storedAt = new Date();
+            }
+            document.title = [
+            "NN ",
+            padDigit(storedAt.getHours()),
+            ":",
+            padDigit(storedAt.getHours()),
+            ":",
+            padDigit(storedAt.getSeconds())
+            ].join('');
+        }
+        
+        // https://stackoverflow.com/a/3866442
+        function setEndOfContenteditable(contentEditableElement)
+        {
+            var range,selection;
+            if(document.createRange)//Firefox, Chrome, Opera, Safari, IE 9+
+            {
+                range = document.createRange();//Create a range (a range is a like the selection but invisible)
+                range.selectNodeContents(contentEditableElement);//Select the entire contents of the element with the range
+                range.collapse(false);//collapse the range to the end point. false means collapse to end rather than the start
+                selection = window.getSelection();//get the selection object (allows you to change selection)
+                selection.removeAllRanges();//remove any selections already made
+                selection.addRange(range);//make the range you have just created the visible selection
+            }
+        }
+    </script>
+</head>
+<body></body>
+</html>

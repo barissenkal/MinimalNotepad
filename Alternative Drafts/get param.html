@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notepad (Nicer)</title>
+    <style>
+        body {
+            background: white;
+            color: #111;
+            font-family: -apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+            font-size:1.2rem;
+            line-height:1.4;
+            max-width:60rem;
+            margin:0 auto;
+            padding:4rem;
+        }
+        body.dark {
+            background: #111;
+            /* color: white; */
+            filter: invert();
+            font-size:1.5rem;
+        }
+        @media only screen and (max-width: 800px) {
+            body {
+                padding: 4rem 1rem;
+            }
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            const params = new URLSearchParams(location.search);
+            var content = params.get("c");
+            if (content) {
+                document.body.innerHTML = content;
+            }
+            var ua = navigator.userAgent.toLowerCase(); 
+            if (params.get("m") == "d" && ua.indexOf('safari') > -1 && ua.indexOf('chrome') < 0) {
+                document.body.classList.add("dark");
+            }
+            var to;
+            document.body.oninput = function () {
+                clearTimeout(to);
+                clearTitle();
+                to = setTimeout(function () {
+                    const params = new URLSearchParams(location.search);
+                    params.set('c', document.body.innerHTML);
+                    window.history.replaceState(null, null, `${location.pathname}?${params}`);
+                    updateTitle();
+                }, 1000);
+            }
+        };
+        function padDigit(num) {
+            var s = "0" + num;
+            return s.substr(s.length -2);
+        }
+        function clearTitle() {
+            document.title = "NN";
+        }
+        function updateTitle() {
+            var d = new Date();
+            document.title = [
+                "NN ",
+                padDigit(d.getHours()),
+                ":",
+                padDigit(d.getHours()),
+                ":",
+                padDigit(d.getSeconds())
+            ].join('');
+        }
+    </script>
+</head>
+<body contenteditable="true"></body>
+</html>
