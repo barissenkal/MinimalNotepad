@@ -1,6 +1,6 @@
 # Minimal Notepad
 
-Another minimal/small/tiny notepad that runs in a browser. Has local sync and local offline save.
+Another minimal/small/tiny notepad that runs in a browser. Has local sync and local offline save. Can be accessed from LAN.
 
 #### How To Run
 
