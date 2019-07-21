@@ -19,8 +19,17 @@
         body.dark {
             background: #111;
             /* color: white; */
-            filter: invert();
+            filter: invert(1);
             font-size:1.5rem;
+        }
+        html.dark_chrome {
+            background: #111;
+            /* color: white; */
+            filter: invert(1);
+            font-size:1.5rem;
+        }
+        html.dark_chrome > body {
+            background: transparent;
         }
         @media only screen and (max-width: 800px) {
             body {
@@ -39,9 +48,12 @@
             const params = new URLSearchParams(location.search);
             if (params.get("m") == "d") {
                 let ua = navigator.userAgent.toLowerCase();
-                if (ua.indexOf('safari') > -1 && ua.indexOf('chrome') < 0) {
+                if (ua.indexOf('safari') >= 0 && ua.indexOf('chrome') < 0) {
                     // Safari only dark mode.
                     document.body.classList.add("dark");
+                } else if (ua.indexOf('chrome') >= 0) {
+                    // Chrome only dark mode.
+                    document.body.parentElement.classList.add("dark_chrome");
                 }
             }
             
