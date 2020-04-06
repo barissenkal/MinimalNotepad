@@ -117,6 +117,26 @@
                 selection.addRange(range);//make the range you have just created the visible selection
             }
         }
+        
+        // Tab hack
+        window.addEventListener("keydown", function (e) {
+            if (e.keyCode == 9) {
+                e.preventDefault();
+                
+                var tabWithSpaceNode = document.createTextNode("\u00a0\u00a0\u00a0\u00a0"); // 4 ("no-break") spaces
+                
+                var selection = document.body.ownerDocument.defaultView.getSelection();
+                var range = selection.getRangeAt(0);
+
+                range.insertNode(tabWithSpaceNode);
+
+                range.setStartAfter(tabWithSpaceNode);
+                range.setEndAfter(tabWithSpaceNode);
+                
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        });
     </script>
 </head>
 <body></body>
